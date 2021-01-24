@@ -14,12 +14,6 @@ console.on('log:input', function(msg){
 	testlog += msg+"\n"
 })
 
-t.add("test on installed",  function(next, error){
-	on(this)
-	if( !this.on ) error("on not installed")
-	next()
-})
-
 t.add("test unnested",  async (next, error) => {
 	// testdummies
 	var input  = {x:1}
@@ -199,77 +193,96 @@ t.add("test superon in my superon",  async (next, error) => {
 	next()
 })
 
-
-t.add("test import json rules from db",  async (next, error) => {
-	// testdummies
-	var input  = {type:"product", price:2}
-	testlog    = "" 
-
-	// set() is basically this.foo.bar.flop = ... without crashing (mkdir -p style)
-
-	this.set('email.send'       , (input, opts) => console.log("    | sending email!")    )
-	this.set('db.is.type'       , (input, opts) => input.type == opts.type          )
-	this.set('db.create'        , (input)       => this.db.create.succes(input)     )
-	this.set('db.create.succes' , (input)       => console.log("    | db item created! ") )
-
-	let db = [{	
-		id:   "2k2lk34", 
-	    on:   "db.create.succes:input", 
-		when: [ {f:"db.is.type", opts:{type:"product"}} ], 
-		then: [ {f:"email.send", opts:{to:"john"}}	    ]
-	}]
-
-	let json2js = (input, rule) => {
-			let ok = true
-			rule.when.map( (t) => ok &= this.get(t.f)( input,  t.opts ) ) 
-			return ok
-	}
-
-	this.on.load(db, json2js )
-
-	// out of scope: vorpal
-	// $ when db.create.succes and db.is.type then email.send
-	// (dump table prompt schema/forms for opts)
-
-	let out = this.db.create(input)
-	if( !testlog.match(/created/) || !testlog.match(/email/) )
-		return error("wrong..")
-
-	this.on.remove()
-
-	next()
-})
-
 t.add("test import expression rules from db",  async (next, error) => {
 	// testdummies
 	var input  = {type:"product", price:2}
 	testlog    = "" 
 
+    on(this)
 	// set() is basically this.foo.bar.flop = ... without crashing (mkdir -p style)
 
-	this.set('email.send'       , (input, opts) => console.log("    | sending email!")                   )
+	this.set('email.send'       , (input)       => console.log("    | sending email!")                   )
 	this.set('db.create'        , (input)       => { input.id = 123; this.db.create.succes(input) })
 	this.set('db.create.succes' , (input)       => console.log("    | db item created! "            )    )
-	
+    this.set('foo.bar.flop',  1)
+
+    // we use filtrex,  but you can include your own expression engine here (json-logic-js for form generation e.g.)
 	let dofiltrex = (input, rule) => filtrex(rule.when, {extraFunctions:this})(input)
 
 	let db = [{	
 		id:   "2k2lk34", 
 	    on:   "db.create.succes:input", 
 		when: "id > 0", 
-		then: [ {f:"email.send", opts:{to:"john"}}	    ]
+		then: [ {f:"email.send", opts:{to:"john"}}, {f:"flop"}  ]
 	}]
 
 	this.on.load(db, dofiltrex )
 
+    /*
+    this.on('email.send:output', function logemail(){
+       console.log("logemail") 
+    })
+    .when('foo > 2')
+    
+    this.on('email.send:output', function foolkasdjkf(){
+       console.log("logemail2") 
+    })
+    */
+
 	let out = this.db.create(input)
 	if( !testlog.match(/created/) || !testlog.match(/email/) )
-		return error("wrong..")
+	    return error("wrong: "+testlog)
 
 	var dump = this.on.serialize()
-	console.dir(dump)
-	console.log(" ")
-	this.ls()
+	console.log("dump")
+	this.on.ls()
+
+	next()
+})
+
+t.add("test import expression rules from db 2",  async (next, error) => {
+	// testdummies
+	var input  = {type:"product", price:2}
+	testlog    = "" 
+
+    on(this)
+	// set() is basically this.foo.bar.flop = ... without crashing (mkdir -p style)
+
+	this.set('email.send'       , (input)       => console.log("    | sending email!")                   )
+	this.set('db.create'        , (input)       => { input.id = 123; this.db.create.succes(input) })
+	this.set('db.create.succes' , (input)       => console.log("    | db item created! "            )    )
+    this.set('foo.bar.flop',  1)
+
+    // we use filtrex,  but you can include your own expression engine here (json-logic-js for form generation e.g.)
+	let dofiltrex = (input, rule) => filtrex(rule.when, {extraFunctions:this})(input)
+
+	let db = [{	
+		id:   "2k2lk34", 
+	    on:   "db.create.succes:input", 
+		when: "id > 0", 
+		then: [ {f:"email.send", opts:{to:"john"}}, {f:"flop"}  ]
+	}]
+
+	this.on.load(db, dofiltrex )
+
+    this.on('email.send:output', function logemail(){
+       console.log("logemail") 
+    })
+    .when('foo > 2')
+    
+    this.on('email.send:output', function foolkasdjkf(){
+       console.log("logemail2") 
+    })
+
+    this.on.error = (msg) => console.log("errorrr")
+
+	let out = this.db.create(input)
+	if( !testlog.match(/created/) || !testlog.match(/email/) || !testlog.match(/errorrr/) )
+	    return error("wrong: "+testlog)
+
+	var dump = this.on.serialize()
+	this.on.ls()
+    console.log( this.on.dot() )
 
 	next()
 })
