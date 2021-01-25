@@ -2,7 +2,7 @@ function on(obj){
 
     let pad         = (value, length) => (value.toString().length < length) ? pad(value+" ", length) : value;
     let ls          = () => console.table(this.dump())
-    let clone       = (o, keeprefs) => _( keeprefs ? Object.assign({},o) : JSON.parse( JSON.stringify(o) ) )
+    let clone       = (o) => Object.assign({}, o)
 
     let api = {
 
@@ -84,13 +84,12 @@ a{nodes.join("\n")}
         this.rules = this.rules || []
         var orig     = this.get(fn)
         var is_async = (f) => _.get(f, 'constructor.name') == 'AsyncFunction'
-       // var clone   = (args) => args.map( (a) => typeof a == 'object' ? _(a).clone(true) : a )
         var thens   = args.slice(1)
         var rule
         if( thens[0].rule ) rule = thens[0].rule
         else {
             rule        = {}
-            rule.then   = thens.map( (f) => ({f:f.name}) )
+            rule.then   = thens.map( (f) => ({f:f.path || f.name}) )
             rule.id     = String(new Date().getTime()).substr(-5)
         }
         rule.on     = fn
@@ -161,12 +160,15 @@ a{nodes.join("\n")}
 		path = String(path)
 		var vars = path.split(".")
 		var lastVar = vars[vars.length - 1]
+        if( typeof value == 'function' ) value.path = path 
 		vars.map(function(v) {
 			if (lastVar == v) return
 			o = (new Function("o","return o." + v)(o) || new Function("o","return o."+v+" = {}")(o))
 			last = v
 		})
-		new Function("o","v","o." + lastVar + " = v")(o, value)
+        try {
+            new Function("o","v","o." + lastVar + " = v")(o, value)
+        } catch (e) { console.error("could not set "+path) }
 		return o
 	}
 
@@ -222,5 +224,7 @@ a{nodes.join("\n")}
 	_(obj)
 
 }
+        
+on.server = typeof window == 'undefined'
 
 module.exports = on
