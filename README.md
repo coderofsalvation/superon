@@ -1,5 +1,5 @@
 <center>
-	<img src="img/logo.png"/>
+	<img width="30%" src="img/logo.png"/>
 </center>
 
 Superon is a tiny functional bus (nodejs+browser) which separates mechanisms vs policy:
