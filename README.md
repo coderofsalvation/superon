@@ -2,7 +2,7 @@
 	<img width="30%" src="img/logo.png"/>
 </center>
 
-Superon is a tiny functional bus (nodejs+browser) which separates mechanisms vs policy:
+SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs policy:
 
 <center>
 	<img src="img/a.JPG"/>
@@ -35,7 +35,7 @@ app.foo.on( (i) => app.foo.fork( i.clone() ) )
 
 ## immersive-cli-driven development with SUPERON 
 
-* superon is **service-agnostic**: turn on/off multi-services (http/mqtt/irc/etc) using superon
+* SUPERON is **service-agnostic**: turn on/off multi-services (http/mqtt/irc/etc) using superon
 * **end-user friendly**: pass enduser-expression languages like [filtrex](https://npmjs.com/filtrex) or [json-logic-js](https://npmjs.com/json-logic-js) to `.when()`
 * **database friendly**: save/load enduser-rules using `.load()` and `.serialize()`
 * **plugins**: functions as plugins
