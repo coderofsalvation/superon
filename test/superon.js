@@ -105,7 +105,7 @@ t.add('test pipe', (next,error) => {
 	let b = (i) => ({...i, b:1}) 
 	let c = (i) => ({...i, c:1}) 
 
-	plug.foo.bar.on([
+	app.foo.on([
 		a, 
 		b, 
 		c

@@ -8,7 +8,7 @@ on = function on(o,f){
 
     so.on = function(f){
 	  let type
-	  if( typeof f == 'object' && f.slice ) {
+	  if( typeof f == 'object' && f.slice ) { // pipe
 	    f = function(args, o){ return on.pipe.apply(this, args)(o) }.bind(this, Array.prototype.slice.call(arguments) )
 		type = 'o'
 	  }
@@ -67,5 +67,5 @@ on.remove = () => {
 	on.so.handlers = []
 }
 
-module.exports = on
-
+if( typeof module != 'undefined' ) module.exports = on
+if( typeof window != 'undefined' ) window.on = on 
