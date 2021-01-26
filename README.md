@@ -10,7 +10,7 @@ SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs 
 
 * **fast**: BAM!
 * **tiny**: only 917 bytes (gzipped)
-* **simple**: your functions **are** the events, so byebye (missing) eventemitter-strings
+* **simple**: your functions **are** the events, byebye `emit('some-event')`
 * **business rule engine**: add your own expression language and save/load rules from db
 
 ## pied piper
