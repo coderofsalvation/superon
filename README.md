@@ -8,10 +8,10 @@ SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs 
 	<img src="img/a.JPG"/>
 </center>
 
-* **fast** BAM!
-* **tiny** only 917 bytes (gzipped)
-* **simple** your functions **are** the events, so byebye (missing) eventemitter-strings
-* **business rule engine** easily add your own expression language and save/load from db
+* **fast**: BAM!
+* **tiny**: only 917 bytes (gzipped)
+* **simple**: your functions **are** the events, so byebye (missing) eventemitter-strings
+* **business rule engine**: add your own expression language and save/load rules from db
 
 ## pied piper
 
