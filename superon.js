@@ -4,6 +4,7 @@ var on
 on = function on(o,f){
     let so  = on.so
     let to  = 'object'
+    let globalbus = typeof o == 'object' && f
     if( o == '*' ) return so.subs.push(f) 
 
     so.on = function(f){
@@ -24,13 +25,12 @@ on = function on(o,f){
       for( var i in this ) bak[i] = this[i]
       this.par[ this.i ] = function(orig,wrap,inputs,outputs,i){
         let o   = {}
-        i.clone = () => clone(i)
-        try{
-            inputs.map( (f) => f(i) )
-            o = orig(i)
-            outputs.map( (f) => o = f(o) || o )
-        }catch(e){ o = {error:e,input:i,func:this.i}}
-        so.subs.map( (s) => { try{ s(i,o) }catch(e){ o = {error:e,func:this.i,input:i,output:o} } })
+		let err = undefined
+        if( String(typeof i).match(/object|function/) ) i.clone = () => clone(i)
+		inputs.map( (f) => f(i) )
+		o = orig(i)
+		outputs.map( (f) => o = f(o) || o )
+        so.subs.map( (s) => { try{ s(i,o,err) }catch(e){ err = {error:e,func:this.i,input:i,output:o} } })
         return o 
       }.bind(this.par, this, this.wrap, this.inputs,this.outputs)
       for( var i in bak ) 
@@ -47,7 +47,13 @@ on = function on(o,f){
             par[i].on = so.on.bind(par[i])
         }    
     }
+    if( globalbus ){ // setup global bus
+		so.subs.push(f) 
+		o.msg = (i) => (i)
+	}
     so.reg(o)
+	so.error = (e) => console.error(e)
+	if( globalbus ) o.msg.on( (i) => (i) )
     o.on = so.on.bind(o)
 }
 

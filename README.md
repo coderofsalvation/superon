@@ -25,12 +25,35 @@ SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs 
 	<img src="img/b.JPG"/>
 </center>
 
-## good-enough immutable
+## extendable modules
+
+let mod = require('module_somebody_made')
+
+on(mod)
+mod.export.on( (o) => {
+  // bugfix: export() should always return object to prevent
+  //         further crashes along the pipeline
+  if( !o ) return {error:"empty object"}
+})
+
+// 0 pullrequests made                        
+// 0 bothered maintainers
+
+## immutable when needed 
 
 ```
 app.foo.fork = (i) => i 
-
 app.foo.on( (i) => app.foo.fork( i.clone() ) )
+```
+
+## easy housekeeping 
+
+
+```
+var hook = app.foo.on( (i) => i.x+=1 )
+hook.remove() // remove one
+on.remove()   // remove all BAM!
+
 ```
 
 ## immersive-cli-driven development with SUPERON 

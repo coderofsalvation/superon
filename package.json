@@ -22,5 +22,8 @@
   "devDependencies": {
     "filtrex": "^2.1.0",
     "json-logic-js": "^2.0.0"
+  },
+  "dependencies": {
+    "console.table": "^0.10.0"
   }
 }
