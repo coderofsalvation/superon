@@ -11,7 +11,7 @@ module.exports = (app, opts) => {
 			if( services[port] ) return console.log("http already running at "+port)
 
 			var server = services[port] = http.createServer( (req, res) => {
-				app.pub({req: ()=>req, res:()=>res, port,plugin:"http"})
+				app.msg({req: ()=>req, res:()=>res, port,plugin:"http"})
 			})
 			server.listen(port)
 			return server
