@@ -80,11 +80,14 @@ t.add('test throw error', (next,error) => {
 
 	on( '*', (i,o) => {
 		if( o.error ) called = true
+        console.dir(o)
 	})
-	
-	plug.foo.bar.on( (i) => { throw "BAM!"} ) // add at least one handler
 
-	let out = plug.foo.bar({x:1})
+    plug.foo.bar.on( (i) => { throw "BAM!"} ) // add at least one handler
+
+    try {
+        let out = plug.foo.bar({x:1})
+    }catch(e){ called = true }
 
 	if( !called ) return error("not called :(")
 
@@ -105,7 +108,7 @@ t.add('test pipe', (next,error) => {
 	let b = (i) => ({...i, b:1}) 
 	let c = (i) => ({...i, c:1}) 
 
-	app.foo.on([
+	plug.foo.bar.on([
 		a, 
 		b, 
 		c
@@ -119,6 +122,7 @@ t.add('test pipe', (next,error) => {
 })
 
 t.add('business rule engine', (next,error) => {
+    let emailsent = false
 	let plug = mock()
 	let databaseRules = () => [
 		{expr:"price > 1", exprtype:"filtrex", action:"send email", config:{to:"me@foo"}}
@@ -128,7 +132,7 @@ t.add('business rule engine', (next,error) => {
 
 
 	let exprtype = {filtrex: (i, expr) => filtrex(expr)(i) }
-	let actions  = {"send email": (i)  => console.log("sending mail: "+JSON.stringify(i)) }
+	let actions  = {"send email": (i)  => emailsent = i.to }
 
 	on( '*', (i,o) => {
 		databaseRules().map( (r) => { 
