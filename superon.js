@@ -14,49 +14,55 @@ on = function on(o,f){
         type = 'o'
       }
       type = type || String(f.toString().match(/(,i|i|o)\) /)||[])[0]
-      let bak  = {}
+      let bak      = {}
+      let me       = this.superon().me
+      let parent   = this.superon().parent
       this.inputs  = this.inputs  || []
       this.outputs = this.outputs || []
       if( type == 'i' ) this.inputs.push(f)
       if( type == 'o' ) this.outputs.push(f)
-      if( this.par[ this.i ].on.remove ) return // already wrapped
+      if( parent[me].on.remove ) return // already wrapped
 
       // wrap the original function
       for( var i in this ) bak[i] = this[i]
-      this.par[ this.i ] = function(orig,wrap,inputs,outputs,i){
+      parent[me] = function(orig,wrap,inputs,outputs,i){
         let o   = {}
 		let err = undefined
         if( String(typeof i).match(/object|function/) ) i.clone = () => clone(i)
-		inputs.map( (f) => f(i) )
+		inputs.map( (f)  => {
+			try { f(i) }catch(e){ this.superon().root.on.error({error:e,at:me}) }
+		})
 		o = orig(i)
 		outputs.map( (f) => o = f(o) || o )
         so.subs.map( (s) => { try{ s(i,o,err) }catch(e){ err = {error:e,func:this.i,input:i,output:o} } })
         return o 
-      }.bind(this.par, this, this.wrap, this.inputs,this.outputs)
+      }.bind(parent, this, this.wrap, this.inputs,this.outputs)
       for( var i in bak ) 
-        if( i != this.i ) this.par[ this.i ][i] = bak[i]
-      this.par[ this.i ].on.remove = ((orig) => () => this.par[this.i] = orig )(this)
-      so.handlers.push( this.par[ this.i ] )
+        if( i != this.i ) parent[me][i] = bak[i]
+      parent[me].on.remove = ((prev) => () => parent[me] = prev )(this)
+      so.handlers.push( parent[me] )
       return so
     }
-    so.reg = (par) => { // parent, variable path
-        for( var i in par ){
-            if( i != "on" && String(typeof par[i]).match(/(function|object)/) ) so.reg(par[i])
-            par[i].par = par
-            par[i].i  = i
-            par[i].on = so.on.bind(par[i])
+    so.reg = (parent, root) => { // parentent, variable path
+		let ignore = (i) => i.match(/^(superon|on)$/) 
+		root = root || parent
+        for( var i in parent ){
+            if( ignore(i) ) continue 
+            if( String(typeof parent[i]).match(/(function|object)/) ){ 
+				if( !ignore(i) ) so.reg(parent[i])
+				parent[i].superon = () => ({parent,  me:i, root })
+				parent[i].on = so.on.bind(parent[i])
+				// register dummies for global bus
+				setTimeout( (parent,i) => parent[i].on( (i) => i ), 100, parent, i )
+			}
         }    
     }
-    if( globalbus ){ // setup global bus
-		so.subs.push(f) 
-		o.msg = (i) => (i)
-	}
-    so.reg(o)
-	so.error = (e) => console.error(e)
-	if( globalbus ) o.msg.on( (i) => (i) )
+    if( globalbus ) so.subs.push(f) 
     o.on = so.on.bind(o)
+	o.on.error = (e) => console.error('jaaaa: '+e)
+    so.reg(o)
+	if( globalbus ) o.msg.on( (i) => (i) )
 }
-
 
 on.pipe = function(fns) {
     return function(item) {

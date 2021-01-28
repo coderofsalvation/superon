@@ -78,10 +78,7 @@ t.add('test throw error', (next,error) => {
 
 	on(plug)                                 // init
 
-	on( '*', (i,o) => {
-		if( o.error ) called = true
-        console.dir(o)
-	})
+	plug.on.error = () => called = true
 
     plug.foo.bar.on( (i) => { throw "BAM!"} ) // add at least one handler
 
