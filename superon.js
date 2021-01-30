@@ -15,13 +15,13 @@ on = function on(o,f){
       }
       type = type || String(f.toString().match(/(,i|i|o)\) /)||[])[0]
       let bak      = {}
-      let me       = this.superon().me
+      let me       = this.name //superon().me
       let parent   = this.superon().parent
       this.inputs  = this.inputs  || []
       this.outputs = this.outputs || []
       if( type == 'i' ) this.inputs.push(f)
       if( type == 'o' ) this.outputs.push(f)
-      if( parent[me].on.remove ) return // already wrapped
+      if( parent[me].on && parent[me].on.remove ) return // already wrapped
 
       // wrap the original function
       for( var i in this ) bak[i] = this[i]
@@ -49,11 +49,13 @@ on = function on(o,f){
         for( var i in parent ){
             if( ignore(i) ) continue 
             if( String(typeof parent[i]).match(/(function|object)/) ){ 
-				if( !ignore(i) ) so.reg(parent[i])
-				parent[i].superon = () => ({parent,  me:i, root })
-				parent[i].on = so.on.bind(parent[i])
+				if( !ignore(i) ){
+					so.reg(parent[i])
+					parent[i].superon = () => ({parent,  me:i, root })
+					parent[i].on = so.on.bind(parent[i])
+				}
 				// register dummies for global bus
-				setTimeout( (parent,i) => parent[i].on( (i) => i ), 100, parent, i )
+				//setTimeout( (parent,i) => parent[i].on( (i) => i ), 100, parent, i )
 			}
         }    
     }
