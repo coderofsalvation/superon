@@ -1,11 +1,12 @@
 <center>
-	<img width="30%" src="img/logo.png"/>
+	<img width="30%" src="https://gitlab.com/coderofsalvation/superon/-/raw/master/img/logo.png"/>
+
 </center>
 
 SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs policy:
 
 <center>
-	<img src="img/a.JPG"/>
+	<img src="https://gitlab.com/coderofsalvation/superon/-/raw/master/img/a.JPG"/>
 </center>
 
 * **fast**: BAM!
@@ -16,13 +17,13 @@ SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs 
 ## pied piper
 
 <center> 
-	<img src="img/c.JPG"/>
+	<img src="https://gitlab.com/coderofsalvation/superon/-/raw/master/img/c.JPG"/>
 </center>
 
 ## bizniz rools!
 
 <center> 
-	<img src="img/b.JPG"/>
+	<img src="https://gitlab.com/coderofsalvation/superon/-/raw/master/img/b.JPG"/>
 </center>
 
 ## extendable modules
