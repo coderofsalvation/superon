@@ -61,7 +61,7 @@ on = function on(o,f){
     }
     if( globalbus ) so.subs.push(f) 
     o.on = so.on.bind(o)
-	o.on.error = (e) => console.error('jaaaa: '+e)
+	o.on.error = (e) => console.error(e)
     so.reg(o)
 	if( globalbus ) o.msg.on( (i) => (i) )
 }
