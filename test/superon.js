@@ -24,7 +24,6 @@ t.add('test handlers', (next,error) => {
 	plug.foo.bar.on( (o) => ({...o,c:1})          ) // add output handler 
 
 	let out = plug.foo.bar({x:1})
-
 	if( !compare({x:1,a:1,b:1,c:1}, out) ) return error("output not ok")
 	if( !compare({x:1,a:1},       clone) ) return error("clone not ok")
 	next()
@@ -70,7 +69,6 @@ t.add('test bus / middleware', (next,error) => {
 
 	next()
 })
-
 
 t.add('test throw error', (next,error) => {
 	let plug = mock()

@@ -26,6 +26,13 @@ SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs 
 	<img src="https://raw.githubusercontent.com/coderofsalvation/superon/-/raw/master/img/b.JPG"/>
 </center>
 
+## custom errors
+
+```
+on(app)
+app.on.error = (e) => console.error(e)
+```
+
 ## extendable modules
 
 let mod = require('module_somebody_made')
