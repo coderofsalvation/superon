@@ -117,7 +117,7 @@ t.add('test pipe', (next,error) => {
 })
 
 t.add('business rule engine', (next,error) => {
-    let emailsent = false
+  let emailsent = false
 	let plug = mock()
 	let databaseRules = () => [
 		{expr:"price > 1", exprtype:"filtrex", action:"send email", config:{to:"me@foo"}}
@@ -140,6 +140,8 @@ t.add('business rule engine', (next,error) => {
 	plug.foo.bar.on( (o) => o ) // add listener 
 
 	plug.foo.bar({plugin:'db',op:'create',table:'product',price:10})	
+
+  if( emailsent != "me@foo" ) return error("email not send")
 
 	// output: sending mail: {"plugin":"db", "op":"create", "table":"product", "price":10, "bar":1, "to":"me@foo"}
 
