@@ -1,12 +1,12 @@
 <center>
-	<img width="30%" src="https://raw.githubusercontent.com/coderofsalvation/superon/-/raw/master/img/logo.png"/>
+	<img width="30%" src="https://raw.githubusercontent.com/coderofsalvation/superon/master/img/logo.png"/>
 
 </center>
 
 SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs policy:
 
 <center>
-	<img src="https://raw.githubusercontent.com/coderofsalvation/superon/-/raw/master/img/a.JPG"/>
+	<img src="https://raw.githubusercontent.com/coderofsalvation/superon/master/img/a.JPG"/>
 </center>
 
 * **fast**: BAM!
@@ -17,13 +17,13 @@ SUPERON is a tiny functional bus (nodejs+browser) which separates mechanisms vs 
 ## pied piper
 
 <center> 
-	<img src="https://raw.githubusercontent.com/coderofsalvation/superon/-/raw/master/img/c.JPG"/>
+	<img src="https://raw.githubusercontent.com/coderofsalvation/superon/master/img/c.JPG"/>
 </center>
 
 ## bizniz rools!
 
 <center> 
-	<img src="https://raw.githubusercontent.com/coderofsalvation/superon/-/raw/master/img/b.JPG"/>
+	<img src="https://raw.githubusercontent.com/coderofsalvation/superon/master/img/b.JPG"/>
 </center>
 
 ## custom errors
