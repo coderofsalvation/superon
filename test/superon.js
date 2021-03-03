@@ -8,75 +8,75 @@ var filtrex  = require('filtrex').compileExpression
 let compare = (a, b) => JSON.stringify(a) == JSON.stringify(b)
 
 let mock = () => ({
-	foo: {
-		bar: (i) => ({...i, bar:1})
-	}
+  foo: {
+    bar: (i) => ({...i, bar:1})
+  }
 })
 
 t.add('test handlers', (next,error) => {
-	let plug = mock()
-	let clone
+  let plug = mock()
+  let clone
 
-	on(plug)                                        // init
-	plug.foo.bar.on( (i) => i.a = 1               ) // add input handler 
-	plug.foo.bar.on( (o) => clone = o.clone()     ) // add output handler 
-	plug.foo.bar.on( (o) => ({...o,b:1})          ) // add output handler 
-	plug.foo.bar.on( (o) => ({...o,c:1})          ) // add output handler 
+  on(plug)                                        // init
+  plug.foo.bar.on( (i) => i.a = 1               ) // add input handler 
+  plug.foo.bar.on( (o) => clone = o.clone()     ) // add output handler 
+  plug.foo.bar.on( (o) => ({...o,b:1})          ) // add output handler 
+  plug.foo.bar.on( (o) => ({...o,c:1})          ) // add output handler 
 
-	let out = plug.foo.bar({x:1})
-	if( !compare({x:1,a:1,b:1,c:1}, out) ) return error("output not ok")
-	if( !compare({x:1,a:1},       clone) ) return error("clone not ok")
-	next()
+  let out = plug.foo.bar({x:1})
+  if( !compare({x:1,a:1,b:1,c:1}, out) ) return error("output not ok")
+  if( !compare({x:1,a:1},       clone) ) return error("clone not ok")
+  next()
 })
 
 t.add('test remove handlers', (next,error) => {
-	let plug = mock()
-	let clone
+  let plug = mock()
+  let clone
 
-	on(plug)                                        // init
-	plug.foo.bar.on( (i) => i.a = 1               ) // add input handler 
-	plug.foo.bar.on( (o) => clone = o.clone()     ) // add output handler 
-	plug.foo.bar.on( (o) => ({...o,b:1})          ) // add output handler 
-	plug.foo.bar.on( (o) => ({...o,c:1})          ) // add output handler 
+  on(plug)                                        // init
+  plug.foo.bar.on( (i) => i.a = 1               ) // add input handler 
+  plug.foo.bar.on( (o) => clone = o.clone()     ) // add output handler 
+  plug.foo.bar.on( (o) => ({...o,b:1})          ) // add output handler 
+  plug.foo.bar.on( (o) => ({...o,c:1})          ) // add output handler 
 
-	// remove single
-	plug.foo.bar.on.remove()
-	let out = plug.foo.bar({x:1})
-	if( out.c ) return error("c should not be there")
+  // remove single
+  plug.foo.bar.on.remove()
+  let out = plug.foo.bar({x:1})
+  if( out.c ) return error("c should not be there")
 
-	//remove all
-	on.remove(plug)
-	out = plug.foo.bar({x:1})
-	if( !compare({x:1,bar:1},out) ) return error("handlers not removed")
-	next()
+  //remove all
+  on.remove(plug)
+  out = plug.foo.bar({x:1})
+  if( !compare({x:1,bar:1},out) ) return error("handlers not removed")
+  next()
 })
 
 t.add('test bus / middleware', (next,error) => {
-	let plug = mock()
-	let called = false
+  let plug = mock()
+  let called = false
 
-	on(plug)                                        // init
+  on(plug)                                        // init
 
-	on( '*', (i,o) => {
-		if( i && o ) called = true
-	})
-	
-	plug.foo.bar.on( (i) => i.a = 1               ) // add at least one handler
+  on( '*', (i,o) => {
+    if( i && o ) called = true
+  })
+  
+  plug.foo.bar.on( (i) => i.a = 1               ) // add at least one handler
 
-	let out = plug.foo.bar({x:1})
+  let out = plug.foo.bar({x:1})
 
-	if( !called ) return error("not called :(")
+  if( !called ) return error("not called :(")
 
-	next()
+  next()
 })
 
 t.add('test throw error', (next,error) => {
-	let plug = mock()
-	let called = false
+  let plug = mock()
+  let called = false
 
-	on(plug)                                 // init
+  on(plug)                                 // init
 
-	plug.on.error = () => called = true
+  plug.on.error = () => called = true
 
     plug.foo.bar.on( (i) => { throw "BAM!"} ) // add at least one handler
 
@@ -84,68 +84,68 @@ t.add('test throw error', (next,error) => {
         let out = plug.foo.bar({x:1})
     }catch(e){ called = true }
 
-	if( !called ) return error("not called :(")
+  if( !called ) return error("not called :(")
 
-	next()
+  next()
 })
 
 t.add('test pipe', (next,error) => {
-	let plug = mock()
-	let called = false
+  let plug = mock()
+  let called = false
 
-	on(plug)                                 // init
+  on(plug)                                 // init
 
-	on( '*', (i,o) => {
-		if( o.error ) called = true
-	})
+  on( '*', (i,o) => {
+    if( o.error ) called = true
+  })
 
-	let a = (i) => ({...i, a:1})
-	let b = (i) => ({...i, b:1}) 
-	let c = (i) => ({...i, c:1}) 
+  let a = (i) => ({...i, a:1})
+  let b = (i) => ({...i, b:1}) 
+  let c = (i) => ({...i, c:1}) 
 
-	plug.foo.bar.on([
-		a, 
-		b, 
-		c
-	])
+  plug.foo.bar.on([
+    a, 
+    b, 
+    c
+  ])
 
-	let out = plug.foo.bar({x:1})
+  let out = plug.foo.bar({x:1})
 
-	if( !out.a || !out.b || !out.c ) return error("not piped :(")
+  if( !out.a || !out.b || !out.c ) return error("not piped :(")
 
-	next()
+  next()
 })
 
 t.add('business rule engine', (next,error) => {
   let emailsent = false
-	let plug = mock()
-	let databaseRules = () => [
-		{expr:"price > 1", exprtype:"filtrex", action:"send email", config:{to:"me@foo"}}
-	]
+  let plug = mock()
+  let databaseRules = () => [
+    {expr:"price > 1", exprtype:"filtrex", action:"send email", config:{to:"me@foo"}}
+  ]
 
-	on(plug)                                 // init
+  on(plug)                                 // init
 
 
-	let exprtype = {filtrex: (i, expr) => filtrex(expr)(i) }
-	let actions  = {"send email": (i)  => emailsent = i.to }
+  let exprtype = {filtrex: (i, expr) => filtrex(expr)(i) }
+  let actions  = {"send email": (i)  => emailsent = i.to }
 
-	on( '*', (i,o) => {
-		databaseRules().map( (r) => { 
-			if( exprtype[r.exprtype](i, r.expr) ){
-				actions[ r.action ]( Object.assign(o,r.config) )
-			}	
-		})
-	})
+  on( '*', (i,o) => {
+    databaseRules().map( (r) => { 
+      if( exprtype[r.exprtype](i, r.expr) ){
+        actions[ r.action ]( Object.assign(o,r.config) )
+      }  
+    })
+  })
 
-	plug.foo.bar.on( (o) => o ) // add listener 
+  plug.foo.bar.on( (o) => o ) // add listener 
 
-	plug.foo.bar({plugin:'db',op:'create',table:'product',price:10})	
+  plug.foo.bar({plugin:'db',op:'create',table:'product',price:10})  
 
   if( emailsent != "me@foo" ) return error("email not send")
 
-	// output: sending mail: {"plugin":"db", "op":"create", "table":"product", "price":10, "bar":1, "to":"me@foo"}
+  // output: sending mail: {"plugin":"db", "op":"create", "table":"product", "price":10, "bar":1, "to":"me@foo"}
 
-	next()
+  next()
 })
 
 t.run()
