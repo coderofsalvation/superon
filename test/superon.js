@@ -122,12 +122,15 @@ t.add('business rule engine', (next,error) => {
   let databaseRules = () => [
     {expr:"price > 1", exprtype:"filtrex", action:"send email", config:{to:"me@foo"}}
   ]
+  // the databaseRules above is an array typically coming from a database (mongo/postgres e.g)
 
   on(plug)                                 // init
 
-
   let exprtype = {filtrex: (i, expr) => filtrex(expr)(i) }
-  let actions  = {"send email": (i)  => emailsent = i.to }
+  let actions  = {
+      "send email":    (i)  => emailsent = i.to 
+    //"logtodatabase": require('actions/logtodatabase.js')
+  }
 
   on( '*', (i,o) => {
     databaseRules().map( (r) => { 
