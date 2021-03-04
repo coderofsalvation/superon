@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <style>
-    div {
-      color: white;
-      font: 18px serif;
-      height: 100%;
-      overflow: auto;
-    }
-  </style>
+  <defs>
+    <style type="text/css">
+    	<![CDATA[
+  		div {
+  		  color: white;
+  		  font: 18px serif;
+  		  height: 100%;
+  		  overflow: auto;
+  		}
+  	]]>
+    </style>
+  </defs>
 
   <polygon points="5,5 195,10 185,185 10,195" />
 
