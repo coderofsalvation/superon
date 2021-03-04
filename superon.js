@@ -50,9 +50,11 @@ on = function on(o,f){
       if( ignore(i) ) continue 
       if( String(typeof parent[i]).match(/(function|object)/) ){ 
         if( !ignore(i) ){
+          if( !parent[i] ) continue;
           so.reg(parent[i])
           if( !parent[i].name && typeof parent[i] == 'function' ) 
              parent[i].fname = i // async or => functions can have readonly empty names
+          console.log("decorating")
           parent[i].superon = () => ({parent,  me:i, root })
           parent[i].on      = so.on.bind(parent[i])
         }

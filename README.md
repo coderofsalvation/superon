@@ -81,4 +81,6 @@ on.remove()   // remove all BAM!
 
 ## Easy-peasy plugins
 
+<img src="https://raw.githubusercontent.com/coderofsalvation/superon/master/img/test.svg"/>
+
 // todo
